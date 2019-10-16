@@ -1,28 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/15 17:35:57 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/10/16 21:39:11 by lucocozz         ###   ########.fr       */
+/*   Created: 2019/10/15 17:36:00 by lucocozz          #+#    #+#             */
+/*   Updated: 2019/10/16 21:42:38 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE
-# define GET_NEXT_LINE
+#include "get_next_line.h"
 
-# include <stdlib.h>
-# include <unistd.h>
-
-typedef struct	s_buff
+void	*ft_calloc(size_t count, size_t size)
 {
-	char		*buffer;
-	int			i;
-}				t_buff;
+	int i;
+	unsigned char *tmp;
 
-int				get_next_line(int fd, char **line);
-void			*ft_calloc(size_t count, size_t size);
-
-#endif
+	i = 0;
+	if (!count || !size)
+		return (NULL);
+	if ((tmp = malloc(size * count)) == NULL)
+		return (NULL);
+	while (i < count)
+		tmp[i++] = 0;
+	return ((void *)tmp);
+}
