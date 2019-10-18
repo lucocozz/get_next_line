@@ -7,9 +7,10 @@ int	main()
 	int fd;
 	char *line;
 
+	line = NULL;
 	fd = open("file.txt", O_RDONLY);
 	get_next_line(fd, &line);
-	printf("%s", line);
+	printf("line=%s", line);
 	close(fd);
 
 	return (0);
