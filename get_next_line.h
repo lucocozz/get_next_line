@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 17:35:57 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/10/18 20:22:24 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/10/20 20:54:44 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,12 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-
-typedef struct	s_buff
-{
-	char		*buffer;
-	int			i;
-}				t_buff;
-
 int				get_next_line(int fd, char **line);
 void			*ft_calloc(size_t count, size_t size);
-void			*ft_memset(void *s, int c, size_t n);
+int				ft_strlen(const char *s);
+int				ft_strchr(const char *s, int c);
+char			*ft_strdup(const char *s1);
+char			*ft_strjoin(char const *s1, char const *s2);
+char			*ft_substr(char const *s, unsigned int start, size_t len);
 
 #endif
