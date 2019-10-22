@@ -6,25 +6,19 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 17:36:00 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/10/20 21:00:20 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/10/22 19:33:31 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	*ft_calloc(size_t count, size_t size)
+void	ft_bzero(void *s, size_t n)
 {
-	unsigned int	i;
 	unsigned char	*tmp;
 
-	i = 0;
-	if (!count || !size)
-		return (NULL);
-	if ((tmp = malloc(size * count)) == NULL)
-		return (NULL);
-	while (i < count)
-		tmp[i++] = 0;
-	return ((void *)tmp);
+	tmp = (unsigned char *)s;
+	while (n-- > 0)
+		*tmp++ = '\0';
 }
 
 int		ft_strlen(const char *s)
@@ -56,8 +50,9 @@ char	*ft_strdup(const char *s1)
 	char	*strnew;
 
 	i = 0;
-	if ((strnew = (char *)ft_calloc(ft_strlen(s1) + 1, sizeof(char))) == NULL)
+	if ((strnew = malloc(sizeof(char) * (ft_strlen(s1) + 1))) == NULL)
 		return (NULL);
+	ft_bzero(strnew, ft_strlen(s1));
 	while (s1[i])
 	{
 		strnew[i] = s1[i];
@@ -77,9 +72,9 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	j = 0;
 	if (s1[0] == '\0' && s2[0] == '\0')
 		return (ft_strdup(""));
-	strnew = (char *)ft_calloc(ft_strlen(s1) + ft_strlen(s2), sizeof(char));
-	if (strnew == NULL)
+	if ((strnew = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1))) == NULL)
 		return (NULL);
+	ft_bzero(strnew, ft_strlen(s1) + ft_strlen(s2));
 	while (s1[i])
 	{
 		strnew[i] = s1[i];

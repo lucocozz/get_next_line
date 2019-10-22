@@ -6,25 +6,32 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 17:28:33 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/10/20 23:38:33 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/10/22 19:42:49 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 
-// 1 : Une ligne a été lue
-// 0 : La lecture est terminée
-// -1 : Une erreur est survenue
+static void		ft_swap(void **pt1, void **pt2)
+{
+	void	*swap;
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+	swap = *pt1;
+	*pt1 = *pt2;
+	*pt2 = swap;
+
+}
+
+char			*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	unsigned int	i;
 	char			*substr;
 
 	i = 0;
-	if ((substr = ft_calloc(len + 1, sizeof(char))) == NULL)
+	if ((substr = malloc(sizeof(char) * (len + 1))) == NULL)
 		return (NULL);
+	ft_bzero(substr, len);
 	if (start < ft_strlen(s))
 		while (i < len && s[start + i])
 		{
@@ -43,6 +50,7 @@ static char		*ft_getline(char **buffer, int size)
 
 	tmp = *buffer;
 	i = ft_strchr(tmp, '\n');
+	i = (i ? i : size);
 	line = ft_substr(tmp, 0, i);
 	if (i + 1 < size)
 		*buffer = ft_substr(tmp, i + 1, size);
@@ -52,13 +60,33 @@ static char		*ft_getline(char **buffer, int size)
 	return (line);
 }
 
-static int		ft_getbuff(char	**buffer)
+static int		ft_getbuff(char **buffer, int fd)
 {
-	char	tmp_read[BUFFER_SIZE + 1];
+	int		i;
+	int		size;
+	char	*tmp_cat;
 	char	*tmp_buff;
+	char	tmp_read[BUFFER_SIZE + 1];
 
 	tmp_buff = *buffer;
-
+	while (1)
+	{
+		ft_bzero(tmp_read, BUFFER_SIZE + 1);
+		if ((size = read(fd, tmp_read, BUFFER_SIZE)) == -1)
+			return (-1);
+		tmp_cat = ft_strjoin(tmp_buff, tmp_read);
+		free(tmp_buff);
+		tmp_buff = NULL;
+		ft_swap((void **)&tmp_cat, (void **)&tmp_buff);
+		printf("cat=%s\nbuff=%s\n", tmp_cat, tmp_buff);
+		if (ft_strchr(tmp_read, '\n') ||
+		(!ft_strchr(tmp_read, '\n') && size < BUFFER_SIZE))
+			break ;
+		printf("segfault pas\n");
+		i = 0;
+	}
+	*buffer = tmp_buff;
+	return (ft_strlen(tmp_buff));
 }
 
 int				get_next_line(int fd, char **line)
@@ -68,14 +96,17 @@ int				get_next_line(int fd, char **line)
 	static char	*buffer;
 	char		tmp[BUFFER_SIZE + 1];
 
+	ft_bzero(tmp, BUFFER_SIZE + 1);
 	if (!buffer)
+	{
 		if ((size = read(fd, tmp, BUFFER_SIZE)) == -1)
 			return (-1);
 		else if (size == 0)
 			return (0);
+	}
 	buffer = ft_strdup(tmp);
 	if ((i = ft_strchr(buffer, '\n')) == -1)
-		size = ft_getbuff(*buffer);
+		size = ft_getbuff(&buffer, fd);
 	*line = ft_getline(&buffer, size);
 	return (1);
 }

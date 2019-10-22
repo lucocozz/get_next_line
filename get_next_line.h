@@ -6,22 +6,18 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 17:35:57 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/10/20 20:54:44 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/10/22 19:33:56 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE
-# define GET_NEXT_LINE
-
-#ifndef BUFFER_SIZE
-# define BUFFER_SIZE 32
-#endif
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
 
 # include <stdlib.h>
 # include <unistd.h>
 
 int				get_next_line(int fd, char **line);
-void			*ft_calloc(size_t count, size_t size);
+void			ft_bzero(void *s, size_t n);
 int				ft_strlen(const char *s);
 int				ft_strchr(const char *s, int c);
 char			*ft_strdup(const char *s1);
