@@ -6,13 +6,13 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 17:36:00 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/10/22 19:33:31 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/10/23 16:55:27 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	ft_bzero(void *s, size_t n)
+void			ft_bzero(void *s, size_t n)
 {
 	unsigned char	*tmp;
 
@@ -21,9 +21,9 @@ void	ft_bzero(void *s, size_t n)
 		*tmp++ = '\0';
 }
 
-int		ft_strlen(const char *s)
+unsigned int	ft_strlen(const char *s)
 {
-	int	i;
+	unsigned int	i;
 
 	i = 0;
 	while (s[i])
@@ -31,7 +31,7 @@ int		ft_strlen(const char *s)
 	return (i);
 }
 
-int		ft_strchr(const char *s, int c)
+int				ft_strchr(const char *s, int c)
 {
 	unsigned int i;
 
@@ -44,7 +44,7 @@ int		ft_strchr(const char *s, int c)
 	return (-1);
 }
 
-char	*ft_strdup(const char *s1)
+char			*ft_strdup(const char *s1)
 {
 	int		i;
 	char	*strnew;
@@ -62,7 +62,7 @@ char	*ft_strdup(const char *s1)
 	return (strnew);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char			*ft_strjoin(char const *s1, char const *s2)
 {
 	int		i;
 	int		j;
@@ -72,7 +72,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	j = 0;
 	if (s1[0] == '\0' && s2[0] == '\0')
 		return (ft_strdup(""));
-	if ((strnew = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1))) == NULL)
+	if (!(strnew = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1))))
 		return (NULL);
 	ft_bzero(strnew, ft_strlen(s1) + ft_strlen(s2));
 	while (s1[i])
