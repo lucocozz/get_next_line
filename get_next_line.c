@@ -6,12 +6,11 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 17:28:33 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/10/23 20:50:49 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/10/25 16:25:05 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
 static void		ft_swap(void **pt1, void **pt2)
 {
@@ -49,7 +48,7 @@ static char		*ft_getline(char **buffer, int size)
 
 	tmp = *buffer;
 	i = ft_strchr(tmp, '\n');
-	i = (i > 0 ? i : size);
+	i = (i >= 0 ? i : size);
 	line = ft_substr(tmp, 0, i);
 	if (i + 1 < size)
 		*buffer = ft_substr(tmp, i + 1, size);
@@ -108,7 +107,8 @@ int				get_next_line(int fd, char **line)
 			return (-1);
 		else if (size == 0)
 		{
-			free(buffer);
+			if (buffer)
+				free(buffer);
 			return (0);
 		}
 	}
