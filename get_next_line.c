@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 17:28:33 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/10/25 16:25:05 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/10/29 20:13:09 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static char		*ft_getline(char **buffer, int size)
 
 	tmp = *buffer;
 	i = ft_strchr(tmp, '\n');
-	i = (i >= 0 ? i : size);
+	i = (i == -1 ? size : i);
 	line = ft_substr(tmp, 0, i);
 	if (i + 1 < size)
 		*buffer = ft_substr(tmp, i + 1, size);
@@ -60,6 +60,7 @@ static char		*ft_getline(char **buffer, int size)
 
 static int		ft_getbuff(char **buffer, int fd)
 {
+	int		chr;
 	int		size;
 	char	*tmp_cat;
 	char	*tmp_buff;
@@ -69,16 +70,14 @@ static int		ft_getbuff(char **buffer, int fd)
 	while (1)
 	{
 		ft_bzero(tmp_read, BUFFER_SIZE + 1);
-		if ((size = read(fd, tmp_read, BUFFER_SIZE)) == -1)
-			return (-1);
-		else if (size == 0)
-			return (0);
+		if ((size = read(fd, tmp_read, BUFFER_SIZE)) <= 0)
+			return (size);
 		tmp_cat = ft_strjoin(tmp_buff, tmp_read);
 		free(tmp_buff);
 		tmp_buff = NULL;
 		ft_swap((void **)&tmp_cat, (void **)&tmp_buff);
-		if (ft_strchr(tmp_read, '\n') > -1 ||
-		(ft_strchr(tmp_read, '\n') == -1 && size < BUFFER_SIZE))
+		chr = ft_strchr(tmp_read, '\n');
+		if (chr > -1 || (chr == -1 && size < BUFFER_SIZE))
 			break ;
 	}
 	*buffer = tmp_buff;
@@ -95,21 +94,17 @@ int				get_next_line(int fd, char **line)
 	ft_bzero(tmp, BUFFER_SIZE + 1);
 	if (!buffer)
 	{
-		if ((size = read(fd, tmp, BUFFER_SIZE)) == -1)
-			return (-1);
-		else if (size == 0)
-			return (0);
+		if ((size = read(fd, tmp, BUFFER_SIZE)) <= 0)
+			return (size);
 		buffer = ft_strdup(tmp);
 	}
 	if ((i = ft_strchr(buffer, '\n')) == -1)
 	{
-		if ((size = ft_getbuff(&buffer, fd)) == -1)
-			return (-1);
-		else if (size == 0)
+		if ((size = ft_getbuff(&buffer, fd)) <= 0)
 		{
 			if (buffer)
 				free(buffer);
-			return (0);
+			return (size);
 		}
 	}
 	*line = ft_getline(&buffer, size);
