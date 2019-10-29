@@ -6,12 +6,16 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 17:35:57 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/10/23 16:50:49 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/10/29 23:11:25 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE
+# endif
 
 # include <stdlib.h>
 # include <unistd.h>
