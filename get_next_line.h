@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 17:35:57 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/10/29 23:11:25 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/10/29 23:21:05 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE
+#  define BUFFER_SIZE 32
 # endif
 
 # include <stdlib.h>
