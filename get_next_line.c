@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 17:28:33 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/10/29 20:13:09 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/10/30 22:25:51 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char			*ft_substr(char const *s, unsigned int start, size_t len)
 	return (substr);
 }
 
-static char		*ft_getline(char **buffer, int size)
+static char		*ft_getline(char **buffer, int size, int *ret)
 {
 	int		i;
 	char	*tmp;
@@ -48,6 +48,7 @@ static char		*ft_getline(char **buffer, int size)
 
 	tmp = *buffer;
 	i = ft_strchr(tmp, '\n');
+	*ret = (i == -1 ? 0 : 1);
 	i = (i == -1 ? size : i);
 	line = ft_substr(tmp, 0, i);
 	if (i + 1 < size)
@@ -87,6 +88,7 @@ static int		ft_getbuff(char **buffer, int fd)
 int				get_next_line(int fd, char **line)
 {
 	int			i;
+	int			ret;
 	int			size;
 	static char	*buffer;
 	char		tmp[BUFFER_SIZE + 1];
@@ -107,6 +109,6 @@ int				get_next_line(int fd, char **line)
 			return (size);
 		}
 	}
-	*line = ft_getline(&buffer, size);
-	return (1);
+	*line = ft_getline(&buffer, size, &ret);
+	return (ret);
 }
