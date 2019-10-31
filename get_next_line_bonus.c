@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 17:28:33 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/10/31 00:01:30 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/10/31 00:05:09 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static void		ft_swap(void **pt1, void **pt2)
 {
@@ -90,25 +90,25 @@ int				get_next_line(int fd, char **line)
 	int			i;
 	int			ret;
 	int			size;
-	static char	*buffer;
+	static char	*buffer[256];
 	char		tmp[BUFFER_SIZE + 1];
 
 	ft_bzero(tmp, BUFFER_SIZE + 1);
-	if (!buffer)
+	if (!buffer[fd])
 	{
 		if ((size = read(fd, tmp, BUFFER_SIZE)) <= 0)
 			return (size);
-		buffer = ft_strdup(tmp);
+		buffer[fd] = ft_strdup(tmp);
 	}
-	if ((i = ft_strchr(buffer, '\n')) == -1)
+	if ((i = ft_strchr(buffer[fd], '\n')) == -1)
 	{
-		if ((size = ft_getbuff(&buffer, fd)) <= 0)
+		if ((size = ft_getbuff(&buffer[fd], fd)) <= 0)
 		{
-			if (buffer)
-				free(buffer);
+			if (buffer[fd])
+				free(buffer[fd]);
 			return (size);
 		}
 	}
-	*line = ft_getline(&buffer, size, &ret);
+	*line = ft_getline(&buffer[fd], size, &ret);
 	return (ret);
 }
