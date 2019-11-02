@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 17:36:00 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/10/31 00:02:01 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/10/31 15:52:31 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ char			*ft_strjoin(char const *s1, char const *s2)
 	return (strnew);
 }
 
-char	*ft_strdup(const char *s)
+char			*ft_strdup(const char *s)
 {
 	int		i;
 	char	*dup;
