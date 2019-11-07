@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 17:28:33 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/11/06 21:51:14 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/11/07 16:34:01 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,25 +92,25 @@ int				get_next_line(int fd, char **line)
 {
 	int			i;
 	int			ret;
-	int			size;
 	static char	*buffer;
 	char		tmp[BUFFER_SIZE + 1];
 
 	ft_bzero(tmp, BUFFER_SIZE + 1);
 	if (!buffer)
 	{
-		if ((size = read(fd, tmp, BUFFER_SIZE)) <= 0)
-			return (size);
+		if ((ret = read(fd, tmp, BUFFER_SIZE)) <= 0)
+		{
+			*line = ft_strdup("");
+			return (ret);
+		}
 		buffer = ft_strdup(tmp);
 	}
-	if ((i = ft_strchr(buffer, '\n')) == -1)
+	if ((i = ft_strchr(buffer, '\n')) == -1 &&
+	(ret = ft_getbuff(&buffer, fd)) == -1)
 	{
-		if ((size = ft_getbuff(&buffer, fd)) == -1)
-		{
-			if (buffer)
-				free(buffer);
-			return (-1);
-		}
+		if (buffer)
+			free(buffer);
+		return (-1);
 	}
 	*line = ft_getline(&buffer, ft_strlen(buffer), &ret);
 	return (ret);
