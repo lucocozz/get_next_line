@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 17:46:53 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/10/31 15:38:33 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/11/07 14:06:17 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	main(int ac, char **av)
 		line = NULL;
 		i++;
 	}
-	printf("[%d][end]=%s\n", ret, line);
+	printf("[%d][%d]=%s\n", ret, i, line);
 	close(fd);
 	// system("leaks a.out");
 	return (0);

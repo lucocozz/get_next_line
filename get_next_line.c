@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 17:28:33 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/10/31 00:01:30 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/11/06 21:51:14 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,13 @@ static int		ft_getbuff(char **buffer, int fd)
 	while (1)
 	{
 		ft_bzero(tmp_read, BUFFER_SIZE + 1);
-		if ((size = read(fd, tmp_read, BUFFER_SIZE)) <= 0)
-			return (size);
+		if ((size = read(fd, tmp_read, BUFFER_SIZE)) == -1)
+			return (-1);
+		else if (size == 0)
+			break ;
 		tmp_cat = ft_strjoin(tmp_buff, tmp_read);
-		free(tmp_buff);
+		if (tmp_buff)
+			free(tmp_buff);
 		tmp_buff = NULL;
 		ft_swap((void **)&tmp_cat, (void **)&tmp_buff);
 		chr = ft_strchr(tmp_read, '\n');
@@ -82,7 +85,7 @@ static int		ft_getbuff(char **buffer, int fd)
 			break ;
 	}
 	*buffer = tmp_buff;
-	return (ft_strlen(tmp_buff));
+	return (1);
 }
 
 int				get_next_line(int fd, char **line)
@@ -102,13 +105,13 @@ int				get_next_line(int fd, char **line)
 	}
 	if ((i = ft_strchr(buffer, '\n')) == -1)
 	{
-		if ((size = ft_getbuff(&buffer, fd)) <= 0)
+		if ((size = ft_getbuff(&buffer, fd)) == -1)
 		{
 			if (buffer)
 				free(buffer);
-			return (size);
+			return (-1);
 		}
 	}
-	*line = ft_getline(&buffer, size, &ret);
+	*line = ft_getline(&buffer, ft_strlen(buffer), &ret);
 	return (ret);
 }
