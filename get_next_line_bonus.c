@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 17:28:33 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/11/06 21:50:53 by lucocozz         ###   ########.fr       */
+/*   Updated: 2019/11/07 21:18:02 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,25 +92,25 @@ int				get_next_line(int fd, char **line)
 {
 	int			i;
 	int			ret;
-	int			size;
 	static char	*buffer[256];
 	char		tmp[BUFFER_SIZE + 1];
 
 	ft_bzero(tmp, BUFFER_SIZE + 1);
 	if (!buffer[fd])
 	{
-		if ((size = read(fd, tmp, BUFFER_SIZE)) <= 0)
-			return (size);
+		if ((ret = read(fd, tmp, BUFFER_SIZE)) <= 0)
+		{
+			*line = ft_strdup("");
+			return (ret);
+		}
 		buffer[fd] = ft_strdup(tmp);
 	}
-	if ((i = ft_strchr(buffer[fd], '\n')) == -1)
+	if ((i = ft_strchr(buffer[fd], '\n')) == -1 &&
+	(ret = ft_getbuff(&buffer[fd], fd)) == -1)
 	{
-		if ((size = ft_getbuff(&buffer[fd], fd)) == -1)
-		{
-			if (buffer[fd])
-				free(buffer[fd]);
-			return (-1);
-		}
+		if (buffer[fd])
+			free(buffer[fd]);
+		return (-1);
 	}
 	*line = ft_getline(&buffer[fd], ft_strlen(buffer[fd]), &ret);
 	return (ret);
