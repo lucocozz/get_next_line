@@ -5,27 +5,38 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/15 17:35:57 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/11/06 19:15:27 by lucocozz         ###   ########.fr       */
+/*   Created: 2022/06/11 03:55:32 by lucocozz          #+#    #+#             */
+/*   Updated: 2022/06/12 17:34:29 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_BONUS_H
 # define GET_NEXT_LINE_BONUS_H
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 32
-# endif
-
+# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <fcntl.h>
+# include <stdbool.h>
 
-int				get_next_line(int fd, char **line);
-void			ft_bzero(void *s, size_t n);
-unsigned int	ft_strlen(const char *s);
-int				ft_strchr(const char *s, int c);
-char			*ft_strdup(const char *s1);
-char			*ft_strjoin(char const *s1, char const *s2);
-char			*ft_substr(char const *s, unsigned int start, size_t len);
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 64
+# endif
+
+typedef struct s_buffer
+{
+	int				size;
+	int				end;
+	int				start;
+	char			buffer[BUFFER_SIZE + 1];
+	struct s_buffer	*next;
+	struct s_buffer	*prev;
+}					t_buffer;
+
+t_buffer	*create_link(void);
+void		push_back(t_buffer **buffer, t_buffer *link, int read_size);
+void		free_link(t_buffer **link);
+void		ft_strncpy(char *dst, char *src, int len);
+char		*get_next_line(int fd);
 
 #endif

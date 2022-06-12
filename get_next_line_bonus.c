@@ -5,113 +5,106 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/15 17:28:33 by lucocozz          #+#    #+#             */
-/*   Updated: 2019/11/07 21:18:02 by lucocozz         ###   ########.fr       */
+/*   Created: 2022/06/11 03:55:22 by lucocozz          #+#    #+#             */
+/*   Updated: 2022/06/12 17:39:38 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-static void		ft_swap(void **pt1, void **pt2)
+static bool	end_of_line(t_buffer *buffer)
 {
-	void	*swap;
+	int			i;
+	t_buffer	*last_link;
 
-	swap = *pt1;
-	*pt1 = *pt2;
-	*pt2 = swap;
+	if (buffer == NULL)
+		return (false);
+	last_link = buffer->prev;
+	i = last_link->start - 1;
+	while (i < last_link->size)
+	{
+		i++;
+		last_link->end = i;
+		if (last_link->buffer[i] == '\n')
+		{
+			last_link->end++;
+			return (true);
+		}
+	}
+	if (last_link->size < BUFFER_SIZE)
+		return (true);
+	return (false);
 }
 
-char			*ft_substr(char const *s, unsigned int start, size_t len)
+static int	get_line_len(t_buffer **buffer, int links_len)
 {
-	unsigned int	i;
-	char			*substr;
+	int			i;
+	int			line_len;
+	t_buffer	*tmp;
 
 	i = 0;
-	if ((substr = malloc(sizeof(char) * (len + 1))) == NULL)
-		return (NULL);
-	ft_bzero(substr, len + 1);
-	if (start < ft_strlen(s))
-		while (i < len && s[start + i])
-		{
-			substr[i] = s[start + i];
-			i++;
-		}
-	substr[i] = '\0';
-	return (substr);
+	line_len = 0;
+	tmp = *buffer;
+	while (i < links_len)
+	{
+		line_len += (tmp->end - tmp->start);
+		tmp = tmp->next;
+		i++;
+	}
+	return (line_len);
 }
 
-static char		*ft_getline(char **buffer, int size, int *ret)
+static char	*get_line(t_buffer **buffer, int links_len)
 {
-	int		i;
-	char	*tmp;
-	char	*line;
+	int			i;
+	char		*line;
+	int			prev_len;
+	t_buffer	*link;
 
-	tmp = *buffer;
-	i = ft_strchr(tmp, '\n');
-	*ret = (i == -1 ? 0 : 1);
-	i = (i == -1 ? size : i);
-	line = ft_substr(tmp, 0, i);
-	if (i + 1 < size)
-		*buffer = ft_substr(tmp, i + 1, size);
-	else
-		*buffer = NULL;
-	free(tmp);
+	i = 0;
+	prev_len = 0;
+	link = *buffer;
+	line = malloc(sizeof(char) * (get_line_len(buffer, links_len) + 1));
+	if (line == NULL)
+		return (NULL);
+	while (i < links_len)
+	{
+		i++;
+		ft_strncpy(&line[prev_len], &link->buffer[link->start],
+			link->end - link->start);
+		prev_len += (link->end - link->start);
+		if (i == links_len && link->end < link->size)
+			link->start = link->end;
+		else
+			free_link(&link);
+	}
+	*buffer = link;
 	return (line);
 }
 
-static int		ft_getbuff(char **buffer, int fd)
+char	*get_next_line(int fd)
 {
-	int		chr;
-	int		size;
-	char	*tmp_cat;
-	char	*tmp_buff;
-	char	tmp_read[BUFFER_SIZE + 1];
+	int				links_len;
+	int				read_size;
+	t_buffer		*link;
+	static t_buffer	*buffer[1024] = {NULL};
 
-	tmp_buff = *buffer;
-	while (1)
+	link = NULL;
+	read_size = 0;
+	links_len = (buffer[fd] != NULL);
+	while (end_of_line(buffer[fd]) == false)
 	{
-		ft_bzero(tmp_read, BUFFER_SIZE + 1);
-		if ((size = read(fd, tmp_read, BUFFER_SIZE)) == -1)
-			return (-1);
-		else if (size == 0)
-			break ;
-		tmp_cat = ft_strjoin(tmp_buff, tmp_read);
-		if (tmp_buff)
-			free(tmp_buff);
-		tmp_buff = NULL;
-		ft_swap((void **)&tmp_cat, (void **)&tmp_buff);
-		chr = ft_strchr(tmp_read, '\n');
-		if (chr > -1 || (chr == -1 && size < BUFFER_SIZE))
-			break ;
-	}
-	*buffer = tmp_buff;
-	return (1);
-}
-
-int				get_next_line(int fd, char **line)
-{
-	int			i;
-	int			ret;
-	static char	*buffer[256];
-	char		tmp[BUFFER_SIZE + 1];
-
-	ft_bzero(tmp, BUFFER_SIZE + 1);
-	if (!buffer[fd])
-	{
-		if ((ret = read(fd, tmp, BUFFER_SIZE)) <= 0)
+		link = create_link();
+		if (link == NULL)
+			return (NULL);
+		read_size = read(fd, link->buffer, BUFFER_SIZE);
+		if (read_size < 0 || (read_size == 0 && links_len == 0))
 		{
-			*line = ft_strdup("");
-			return (ret);
+			free(link);
+			return (NULL);
 		}
-		buffer[fd] = ft_strdup(tmp);
+		push_back(&buffer[fd], link, read_size);
+		links_len++;
 	}
-	if ((i = ft_strchr(buffer[fd], '\n')) == -1 &&
-	(ret = ft_getbuff(&buffer[fd], fd)) == -1)
-	{
-		if (buffer[fd])
-			free(buffer[fd]);
-		return (-1);
-	}
-	*line = ft_getline(&buffer[fd], ft_strlen(buffer[fd]), &ret);
-	return (ret);
+	return (get_line(&buffer[fd], links_len));
 }
